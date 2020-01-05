@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "9973bc222ad73d0545a6";
+/******/ 	var hotCurrentHash = "eb1e4f939bfd3ee1e817";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -2815,14 +2815,67 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_logger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/logger */ "./src/js/logger.js");
 /* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./css/style.css */ "./src/css/style.css");
 /* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_style_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _js_call__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./js/call */ "./src/js/call.js");
+/* harmony import */ var _js_call__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_js_call__WEBPACK_IMPORTED_MODULE_2__);
+
 
  // Log message to console
 
-Object(_js_logger__WEBPACK_IMPORTED_MODULE_0__["default"])('A very warm welcome to Expack!'); // Needed for Hot Module Replacement
+Object(_js_logger__WEBPACK_IMPORTED_MODULE_0__["default"])('Welcome to Expack!');
 
 if (typeof module.hot !== 'undefined') {
-  module.hot.accept(); // eslint-disable-line no-undef  
+  // eslint-disable-line no-undef
+  module.hot.accept(); // eslint-disable-line no-undef
 }
+
+/***/ }),
+
+/***/ "./src/js/call.js":
+/*!************************!*\
+  !*** ./src/js/call.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var peer = new Peer();
+peer.on('open', function (id) {
+  document.getElementById("local-peer-ID").innerText = id;
+});
+document.getElementById("call-btn").addEventListener("click", makeCall);
+document.getElementById("cast-btn").addEventListener("click", function () {
+  var getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.mediaDevices && navigator.mediaDevices.getUserMedia).bind(navigator);
+  getUserMedia({
+    video: false,
+    audio: true
+  }, function (stream) {
+    window.localStream = stream;
+    document.getElementById("cast-btn").style.display = "none";
+    document.getElementById("cast-ready").style.display = "block";
+  }, function (err) {
+    console.log("Failed to get user media", err);
+  });
+});
+
+function makeCall() {
+  var remoteId = document.getElementById("remoteID").value;
+  var conn = peer.connect(remoteId);
+}
+
+peer.on('connection', function (conn) {
+  conn.on('open', function () {
+    console.log("New connection from " + conn.peer);
+    var call = peer.call(conn.peer, window.localStream);
+  });
+});
+peer.on('call', function (call) {
+  console.log("Received call");
+  call.answer();
+  call.on("stream", function (remoteStream) {
+    var player = document.getElementById("audio-player");
+    player.srcObject = remoteStream;
+    player.play();
+  });
+});
 
 /***/ }),
 

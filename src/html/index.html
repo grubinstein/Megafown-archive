@@ -2,12 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Express and Webpack App</title>
+    <title>Megafown</title>
     <link rel="shortcut icon" href="#">
+    <script src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script>
 </head>
 <body>
-    <h1>Expack</h1>
-    <p class="description">Express and Webpack Boilerplate App</p>
-    <div class="awful-selfie"></div>
+    <h1>Megafown</h1>
+    <p class="description">Make yourself heard</p>
+    <p id="local-peer-ID">No ID</p>
+    <button type="button" id="cast-btn">Cast</button>
+    <p id="cast-ready" hidden>Ready to cast</p>
+    <h1>Make Call</h1>
+    <form class="callForm">
+        <label for="remoteID">Remote ID</label>
+        <input id="remoteID" name="remoteID" type="text">
+        <button type="button" id="call-btn">Call</button>
+    </form>
+    <audio controls id="audio-player">
+
+    </audio>
 </body>
 </html>
